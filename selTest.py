@@ -57,36 +57,26 @@ classSearch = driver.find_element(By.CSS_SELECTOR, "input[value='Class Search']"
 classSearch.click()
 
 
+#RESULTS PAGE OF ALL CLASSES
+#Waits for the redirect to finish
+wait2 = WebDriverWait(driver, 10)
+wait2.until(EC.title_is('Class Schedule Listing'))
 
 
+#Stores the rows of the table as a list
+resultsDriver = driver.find_elements(By.XPATH, "//*[@summary= 'This layout table is used to present the sections found']/tbody/tr")
 
 
+#Deletes the first two rows from the list (Computer Programming and Status rows)
+del(resultsDriver[0:2])
 
 
-# #Start of the real menu for the selected Term
-# subjectBar = Select(driver.find_element(By.NAME, "sel_subj"))   #Finds the tag for the dropdown menu bar for Subject
-# subjectBar.select_by_visible_value("COP")    #Selects COP as the Subject
-# #subjectBar.submit()
+#Parses through each sublist within the list of rows 
+for a in resultsDriver:
+    tdResults = a.find_elements(By.TAG_NAME, "td")
 
-# #Selects the 4 digit course number
-# courseNumBar = driver.find_element(By.NAME, "sel_crse")   #Finds the tag for the course number bar
-# courseNumBar.clear()    #Clears the search box
-# courseNumBar.send_keys("2510")
-# #courseNumBar.submit()
+    for x in tdResults:
+        print(x.text)
 
 
-
-
-
-
-
-#Waits for the table of names to load for 30seconds and if it cannot be found close the session
-# try:
-#     termData = WebDriverWait(driver, 30).until(
-#     EC.visibility_of_element_located((By.TAG_NAME, "form")))
-# except:
-#     print("Something went wrong")
-#     driver.quit()
-
-
-#driver.quit()
+print("-------------------------------------------------------------------------------------------------------------------------------------")
