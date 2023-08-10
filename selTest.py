@@ -70,13 +70,51 @@ resultsDriver = driver.find_elements(By.XPATH, "//*[@summary= 'This layout table
 #Deletes the first two rows from the list (Computer Programming and Status rows)
 del(resultsDriver[0:2])
 
+#Variables to track each column element then order a full row as a list 
+classesList = [] #A list where element is a list all the classes
+tempList = [] #Will hold information on a single class (row)
+i = 0
 
 #Parses through each sublist within the list of rows 
 for a in resultsDriver:
-    tdResults = a.find_elements(By.TAG_NAME, "td")
-
+    tdResults = a.find_elements(By.TAG_NAME, "td") #Looks at a single box within the table (for example COP in row 1)
+    
+    #Turns the information the single box into string form
     for x in tdResults:
-        print(x.text)
+        stat = x.text
+        tempList.append(stat) #Will append each piece of information present until a full row gets added as a list
+        i += 1 #Keeps track of which column in the row we are at
+
+    #The table has 20 columns and each row gets saved as a list after 20 elements
+    if (i % 20 == 0):
+        classesList.append(tempList)
+        tempList = []
+        
+
+#Creates a list to track open and closed classes
+openClass = []
+closedClass = []
+
+#Will check the status of a class by looking at the first element within each relevant sublist
+classRange = range(0, len(classesList), 2)
+for j in classRange:
+    #print(classesList[j])   
+
+    #Checks the status of each class
+    if(classesList[j][0] == 'C'): #Checks for when the class is closed 
+        closedClass.append(classesList[j]) #Adds the original class
+        if (classesList[j + 1][2] == ' '): #Checks if it indeed an extra day for the same class
+            closedClass.append(classesList[j + 1]) #Adds the information about additional days the class taught for
+
+    elif(classesList[j][0] == ' '):
+        openClass.append(classesList[j]) #Adds the original class
+        if (classesList[j + 1][2] == ' '): #Checks if it indeed an extra day for the same class
+            openClass.append(classesList[j + 1]) #Adds the information about additional days the class taught for
 
 
 print("-------------------------------------------------------------------------------------------------------------------------------------")
+# print(classesList)
+
+print(openClass)
+print("---------------------------------------------BREAK--------------------------------------------------------------------------------")
+print(closedClass)
